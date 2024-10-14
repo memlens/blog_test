@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+    <h2>{{ post.title }}</h2>
+{% endblock page_title %}
+
+{% block page_content %}
+    <div class="post-details mb-3">
+        <small>
+            {{ post.created_on.date }} | Categories:
+            {% for category in post.categories.all %}
+                <a href="{% url 'blog_category' category.name %}" class="badge bg-secondary text-decoration-none">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+        </small>
+    </div>
+
+    <div class="post-body mb-5">
+        <p>{{ post.body | linebreaks }}</p>
+    </div>
+
+    <div class="comments-section">
+        <h3>Leave a comment:</h3>
+        <form method="post" class="mb-4">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <h3>Comments:</h3>
+
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment mb-4">
+                    <p>
+                        <strong>{{ comment.author }}</strong> on {{ comment.created_on.date }} wrote:
+                    </p>
+                    <p>
+                        {{ comment.body | linebreaks }}
+                    </p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endif %}
+    </div>
+{% endblock page_content %}
